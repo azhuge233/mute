@@ -1,0 +1,44 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#F2F5FA"
+    },
+    {
+      "name": "page_bg",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "title_text",
+      "value": "#182431"
+    },
+    {
+      "name": "title_icon",
+      "value": "#182431"
+    },
+    {
+      "name": "loading_text",
+      "value": "#666666"
+    },
+    {
+      "name": "banner_bg",
+      "value": "#FFF1DB"
+    },
+    {
+      "name": "banner_text",
+      "value": "#8A5A00"
+    },
+    {
+      "name": "action_edit_bg",
+      "value": "#00C000"
+    },
+    {
+      "name": "action_delete_bg",
+      "value": "#FF0000"
+    },
+    {
+      "name": "row_active_bg",
+      "value": "#F0F1F3"
+    }
+  ]
+}

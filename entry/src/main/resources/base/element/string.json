@@ -1,0 +1,452 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "MUTE 微博时间线过滤"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "MUTE 微博时间线过滤"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "MUTE"
+    },
+    {
+      "name": "loading_text",
+      "value": "正在加载微博…"
+    },
+    {
+      "name": "banner_core_missing",
+      "value": "过滤未生效：匹配核心加载失败"
+    },
+    {
+      "name": "banner_config_rejected",
+      "value": "规则未生效：本次推送被拒"
+    },
+    {
+      "name": "banner_login_expired",
+      "value": "登录已失效，点击重新登录"
+    },
+    {
+      "name": "banner_login_running",
+      "value": "正在登录微博…"
+    },
+    {
+      "name": "banner_web_load_failed",
+      "value": "页面加载失败，点此重试"
+    },
+    {
+      "name": "settings_title",
+      "value": "设置"
+    },
+    {
+      "name": "settings_filter_enabled",
+      "value": "启用过滤"
+    },
+    {
+      "name": "settings_filter_enabled_desc",
+      "value": "关闭后全部卡片显示；含关键词与作者规则"
+    },
+    {
+      "name": "settings_group_keywords",
+      "value": "关键词"
+    },
+    {
+      "name": "settings_group_authors",
+      "value": "作者"
+    },
+    {
+      "name": "settings_keywords_add",
+      "value": "添加关键词"
+    },
+    {
+      "name": "settings_keywords_empty",
+      "value": "还没有关键词"
+    },
+    {
+      "name": "settings_authors_add",
+      "value": "添加作者"
+    },
+    {
+      "name": "settings_authors_empty",
+      "value": "还没有作者"
+    },
+    {
+      "name": "author_input_placeholder",
+      "value": "输入 uid 或主页链接"
+    },
+    {
+      "name": "author_input_hint",
+      "value": "支持纯数字 uid，或 weibo.com / m.weibo.cn 的主页链接"
+    },
+    {
+      "name": "settings_color_mode",
+      "value": "颜色模式"
+    },
+    {
+      "name": "settings_color_auto",
+      "value": "跟随系统"
+    },
+    {
+      "name": "settings_color_light",
+      "value": "浅色"
+    },
+    {
+      "name": "settings_color_dark",
+      "value": "深色"
+    },
+    {
+      "name": "settings_force_dark",
+      "value": "强制网页深色"
+    },
+    {
+      "name": "settings_force_dark_desc",
+      "value": "深色模式下强制网页反色；浅色模式不受影响"
+    },
+    {
+      "name": "settings_force_dark_hint",
+      "value": "仅在深色模式下生效"
+    },
+    {
+      "name": "settings_force_dark_hint_follow",
+      "value": "跟随系统明暗"
+    },
+    {
+      "name": "settings_appearance",
+      "value": "外观"
+    },
+    {
+      "name": "settings_account_manage",
+      "value": "账号管理"
+    },
+    {
+      "name": "settings_storage",
+      "value": "存储"
+    },
+    {
+      "name": "settings_storage_app",
+      "value": "应用大小"
+    },
+    {
+      "name": "settings_storage_data",
+      "value": "数据"
+    },
+    {
+      "name": "settings_storage_cache",
+      "value": "缓存"
+    },
+    {
+      "name": "settings_storage_clear",
+      "value": "清理缓存"
+    },
+    {
+      "name": "settings_storage_cleared",
+      "value": "已清理"
+    },
+    {
+      "name": "settings_storage_clear_amount",
+      "value": "本次清理 %s"
+    },
+    {
+      "name": "settings_storage_clear_failed",
+      "value": "清理失败：%s"
+    },
+    {
+      "name": "settings_auto_clear",
+      "value": "自动清理"
+    },
+    {
+      "name": "settings_auto_clear_hint",
+      "value": "应用退到后台时检查一次，超过 200 MB 就清理"
+    },
+    {
+      "name": "settings_group_transfer",
+      "value": "导入导出"
+    },
+    {
+      "name": "settings_export",
+      "value": "导出规则"
+    },
+    {
+      "name": "settings_import",
+      "value": "导入规则"
+    },
+    {
+      "name": "settings_import_merge",
+      "value": "合并（去重）"
+    },
+    {
+      "name": "settings_import_overwrite",
+      "value": "覆盖现有规则"
+    },
+    {
+      "name": "settings_clear_all",
+      "value": "清空全部规则"
+    },
+    {
+      "name": "settings_clear_confirm_title",
+      "value": "清空全部规则？"
+    },
+    {
+      "name": "settings_clear_confirm_msg",
+      "value": "关键词与作者规则会全部删除，账号与设置不受影响，删除后无法恢复。"
+    },
+    {
+      "name": "settings_group_about",
+      "value": "关于"
+    },
+    {
+      "name": "settings_about_version",
+      "value": "版本"
+    },
+    {
+      "name": "account_title",
+      "value": "账号"
+    },
+    {
+      "name": "account_add",
+      "value": "新增账号"
+    },
+    {
+      "name": "account_rename",
+      "value": "改名"
+    },
+    {
+      "name": "account_delete",
+      "value": "删除"
+    },
+    {
+      "name": "account_delete_confirm_title",
+      "value": "删除账号？"
+    },
+    {
+      "name": "account_delete_confirm_msg",
+      "value": "该账号的本地登录快照会一并删除，无法恢复。"
+    },
+    {
+      "name": "account_default_name",
+      "value": "账号 %d"
+    },
+    {
+      "name": "account_name_placeholder",
+      "value": "账号名"
+    },
+    {
+      "name": "account_empty",
+      "value": "还没有保存的账号"
+    },
+    {
+      "name": "keyword_add_title",
+      "value": "添加关键词"
+    },
+    {
+      "name": "keyword_delete_confirm",
+      "value": "删除关键词"
+    },
+    {
+      "name": "keyword_edit_title",
+      "value": "编辑关键词"
+    },
+    {
+      "name": "keyword_input_placeholder",
+      "value": "输入关键词"
+    },
+    {
+      "name": "keyword_dup",
+      "value": "该关键词已存在"
+    },
+    {
+      "name": "keyword_empty",
+      "value": "关键词不能为空"
+    },
+    {
+      "name": "keyword_single_char_hint",
+      "value": "单字关键词可能误杀，请谨慎使用"
+    },
+    {
+      "name": "author_add_title",
+      "value": "屏蔽作者"
+    },
+    {
+      "name": "author_parse_failed",
+      "value": "无法从该链接取出 uid，请粘贴含数字 uid 的主页链接"
+    },
+    {
+      "name": "author_dup",
+      "value": "该作者已在列表中"
+    },
+    {
+      "name": "author_delete_confirm",
+      "value": "删除作者？"
+    },
+    {
+      "name": "author_no_uid",
+      "value": "这张卡片取不到作者 uid"
+    },
+    {
+      "name": "common_cancel",
+      "value": "取消"
+    },
+    {
+      "name": "common_confirm",
+      "value": "确定"
+    },
+    {
+      "name": "common_done",
+      "value": "完成"
+    },
+    {
+      "name": "common_delete",
+      "value": "删除"
+    },
+    {
+      "name": "common_edit",
+      "value": "编辑"
+    },
+    {
+      "name": "common_save",
+      "value": "保存"
+    },
+    {
+      "name": "common_back",
+      "value": "返回"
+    },
+    {
+      "name": "common_exit",
+      "value": "退出"
+    },
+    {
+      "name": "exit_confirm_title",
+      "value": "退出 MUTE？"
+    },
+    {
+      "name": "undo_added",
+      "value": "已添加"
+    },
+    {
+      "name": "undo_action",
+      "value": "撤销"
+    },
+    {
+      "name": "toast_added_keyword",
+      "value": "已添加关键词"
+    },
+    {
+      "name": "toast_added_author",
+      "value": "已屏蔽作者"
+    },
+    {
+      "name": "toast_copied",
+      "value": "已复制"
+    },
+    {
+      "name": "toast_copy_failed",
+      "value": "复制失败"
+    },
+    {
+      "name": "toast_exported",
+      "value": "规则已导出"
+    },
+    {
+      "name": "toast_export_failed",
+      "value": "导出失败，请检查目标文件"
+    },
+    {
+      "name": "toast_imported",
+      "value": "已导入 %d 条规则"
+    },
+    {
+      "name": "toast_import_failed",
+      "value": "导入失败：文件格式不正确，现有规则未改动"
+    },
+    {
+      "name": "toast_snapshot_saved",
+      "value": "登录状态已保存"
+    },
+    {
+      "name": "toast_snapshot_failed",
+      "value": "登录状态保存失败，旧快照保持不变"
+    },
+    {
+      "name": "toast_restore_failed",
+      "value": "恢复登录状态失败，账号未切换"
+    },
+    {
+      "name": "toast_login_not_detected",
+      "value": "未检测到登录，已恢复原账号"
+    },
+    {
+      "name": "toast_link_failed",
+      "value": "无法打开该链接"
+    },
+    {
+      "name": "toast_rules_not_loaded",
+      "value": "规则还没加载完，请稍后再试"
+    },
+    {
+      "name": "toast_save_failed",
+      "value": "保存失败"
+    },
+    {
+      "name": "toast_rule_missing",
+      "value": "该条目已不存在"
+    },
+    {
+      "name": "toast_clear_partial",
+      "value": "部分规则未能清空，请重试"
+    },
+    {
+      "name": "toast_import_partial",
+      "value": "部分规则未能写入，请重试"
+    },
+    {
+      "name": "toast_cancelled",
+      "value": "已取消"
+    },
+    {
+      "name": "menu_copy",
+      "value": "复制"
+    },
+    {
+      "name": "menu_copy_link",
+      "value": "复制链接"
+    },
+    {
+      "name": "menu_open_link",
+      "value": "打开链接"
+    },
+    {
+      "name": "menu_add_keyword",
+      "value": "添加关键词「%s」"
+    },
+    {
+      "name": "keyword_too_long",
+      "value": "关键词最长 30 字"
+    },
+    {
+      "name": "settings_entry_keywords_count",
+      "value": "%d 条"
+    },
+    {
+      "name": "settings_entry_authors_count",
+      "value": "%d 个"
+    },
+    {
+      "name": "settings_about_app",
+      "value": "应用名"
+    },
+    {
+      "name": "settings_about_author_label",
+      "value": "作者"
+    },
+    {
+      "name": "settings_about_author",
+      "value": "azhuge233"
+    },
+    {
+      "name": "title_refresh",
+      "value": "刷新"
+    }
+  ]
+}
