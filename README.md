@@ -7,7 +7,7 @@ A HarmonyOS client for [Weibo](https://weibo.com).
 
 Hide timeline posts that match your keywords or authors.
 
-_Only tested on Mate 60 Pro._
+_Only tested on Mate 60 Pro and Pura X View._
 
 ## How It Works
 
