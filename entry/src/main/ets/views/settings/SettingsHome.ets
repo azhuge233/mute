@@ -1,7 +1,6 @@
 import { AccountMeta } from '../../account/AccountService';
 import { AccountViewState } from '../../account/AccountViewState';
 import { CacheService, CacheView } from '../../data/CacheService';
-import { COLOR_MODE_DARK, COLOR_MODE_LIGHT } from '../../data/RuleData';
 import { MuteStore } from '../../store/MuteStore';
 import { showToast } from '../Toast';
 import { EntryRow, PADDING_H, ROW_HEIGHT, SwitchRow } from './SettingsRow';
@@ -10,24 +9,23 @@ const GAP: number = 8;
 const SECTION_GAP: number = 12;
 
 /**
- * 七个入口指向哪一页：本页只说「要开哪一件事」，路由名与 builder 在 `SettingsRoutes.ets`。
+ * 五个入口指向哪一页：本页只说「要开哪一件事」，路由名与 builder 在 `SettingsRoutes.ets`。
  * 枚举定义在这里（而不是路由层）是为了让依赖只有「路由层 → 页面」一个方向，不成环。
  */
 export enum SettingsTarget {
-  KEYWORDS = 0,
-  AUTHORS = 1,
+  APPEARANCE = 0,
+  RULES = 1,
   ACCOUNT = 2,
-  TRANSFER = 3,
-  ABOUT = 4,
-  APPEARANCE = 5,
-  STORAGE = 6
+  STORAGE = 3,
+  ABOUT = 4
 }
 
 /**
- * 主设置页（设计 §2.7.1）：一屏两层——过滤总开关，加「外观」入口行与六个入口行。
+ * 主设置页（设计 §2.7.1）：一屏两层——过滤总开关，加五个入口行。
  *
- * 七项内容归子页：颜色模式与强制网页深色合为「外观」子页，它才是这两条的共同可用条件能看见的地方；
- * 规则表、账号、存储、导入导出、关于各自成页。本页只留「开关 + 入口」，所以不再有分组标题。
+ * 五项入口：外观与行为（颜色、强制网页深色、侧键滑动）、屏蔽规则（关键词 / 作者 / 导入导出）、
+ * 账号、存储、关于。规则三件事合为一个入口页后首页回到五项，与「一屏一层」的口径一致；
+ * 本页只留「开关 + 入口」，所以不再有分组标题。
  *
  * 只做显示与动作转发：规则读写与落盘顺序在 `store/MuteStore.ets`，主题映射在 `theme/ThemeService.ets`，
  * 页面跳转由路由层（`SettingsRoutes.ets`）接。任何一次改动之后调 `@Event onChanged`，
@@ -65,18 +63,6 @@ export struct SettingsHome {
     this.onChanged();
   }
 
-  /** 右端当前档：三档各一个资源，认不出的值按「跟随系统」显示（store 已按盘回退）。 */
-  private colorText(): Resource {
-    const mode: string = this.store.settings.colorMode;
-    if (mode === COLOR_MODE_LIGHT) {
-      return $r('app.string.settings_color_light');
-    }
-    if (mode === COLOR_MODE_DARK) {
-      return $r('app.string.settings_color_dark');
-    }
-    return $r('app.string.settings_color_auto');
-  }
-
   /** 账号入口右端的值：当前账号名；没保存过账号时留空，不编一个名字。 */
   private accountName(): string {
     const active: AccountMeta | undefined =
@@ -103,26 +89,18 @@ export struct SettingsHome {
   @Builder
   entryBlock() {
     Column() {
-      // 外观排第一：颜色模式是「现在是什么档」这类状态，进子页前先看得见（设计 §2.7.1）
+      // 外观与行为排第一；右端不挂值——它管三件事（颜色、强制网页深色、侧键滑动），一个颜色档代表不了整页
       EntryRow({
         label: $r('app.string.settings_appearance'),
-        value: this.colorText(),
         onTap: () => {
           this.onOpen(SettingsTarget.APPEARANCE);
         }
       })
+      // 关键词、作者、导入导出合成「屏蔽规则」一个入口（F6 / A51）：三件事是一组，首页因此回到五项
       EntryRow({
-        label: $r('app.string.settings_group_keywords'),
-        value: $r('app.string.settings_entry_keywords_count', this.store.keywords.length),
+        label: $r('app.string.settings_rules'),
         onTap: () => {
-          this.onOpen(SettingsTarget.KEYWORDS);
-        }
-      })
-      EntryRow({
-        label: $r('app.string.settings_group_authors'),
-        value: $r('app.string.settings_entry_authors_count', this.store.authors.length),
-        onTap: () => {
-          this.onOpen(SettingsTarget.AUTHORS);
+          this.onOpen(SettingsTarget.RULES);
         }
       })
       EntryRow({
@@ -138,12 +116,6 @@ export struct SettingsHome {
         value: this.cacheView.cacheText,
         onTap: () => {
           this.onOpen(SettingsTarget.STORAGE);
-        }
-      })
-      EntryRow({
-        label: $r('app.string.settings_group_transfer'),
-        onTap: () => {
-          this.onOpen(SettingsTarget.TRANSFER);
         }
       })
       EntryRow({

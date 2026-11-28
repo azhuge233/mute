@@ -165,6 +165,13 @@ export struct MuteWeb {
   };
 
   /**
+   * `Web` 的可视高度（vp）：侧键滑动按它的 60% 折算一次步长（设计 §2.7.8 / F13）。
+   * 只报高度，不管宽——滑动只沿纵轴。
+   */
+  @Event onViewportHeight: (height: number) => void = (height: number) => {
+  };
+
+  /**
    * 组件构造读数（设计 §2.9 ② 四段读数的第一段）：与「控制器挂载」「页面开始」「页面结束」分开，
    * NWeb 建不起来时这一行有、后三行没有，一眼能看出失败落在组件构造之后、控制器挂载之前。
    */
@@ -365,6 +372,14 @@ export struct MuteWeb {
         }
         const touch: TouchObject = event.touches[0];
         this.onTouchPoint(touch.x, touch.y);
+      })
+      // 高度读数（设计 §2.7.8）：侧键滑动的步长 = 这个高度 × 60%，不写死 vp。
+      // 只在高度真的变了时才报，避免布局的每一次重算都往宿主推一遍。
+      .onAreaChange((oldArea: Area, newArea: Area) => {
+        const height: number = newArea.height as number;
+        if (height > 0 && height !== (oldArea.height as number)) {
+          this.onViewportHeight(height);
+        }
       })
       .onControllerAttached(() => {
         // 读数：控制器真的挂上了（设计 §2.9 ②）。这行无条件打，release 构建也有——

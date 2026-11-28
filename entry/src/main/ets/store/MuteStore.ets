@@ -110,7 +110,7 @@ export class MuteStore {
   setFilterEnabled(enabled: boolean): boolean {
     const s: MuteSettings = this.settings;
     return this.saveSettings({ filterEnabled: enabled, colorMode: s.colorMode, forceWebDark: s.forceWebDark,
-      autoClearCache: s.autoClearCache });
+      autoClearCache: s.autoClearCache, sideKeyScroll: s.sideKeyScroll });
   }
 
   /** 三模式只认三个合法值：不认识的值不落盘，按非法入参返回，与写失败分开报。 */
@@ -121,7 +121,7 @@ export class MuteStore {
     }
     const s: MuteSettings = this.settings;
     return this.saveSettings({ filterEnabled: s.filterEnabled, colorMode: mode, forceWebDark: s.forceWebDark,
-      autoClearCache: s.autoClearCache })
+      autoClearCache: s.autoClearCache, sideKeyScroll: s.sideKeyScroll })
       ? RuleChange.OK
       : RuleChange.WRITE_FAILED;
   }
@@ -129,7 +129,7 @@ export class MuteStore {
   setForceWebDark(enabled: boolean): boolean {
     const s: MuteSettings = this.settings;
     return this.saveSettings({ filterEnabled: s.filterEnabled, colorMode: s.colorMode, forceWebDark: enabled,
-      autoClearCache: s.autoClearCache });
+      autoClearCache: s.autoClearCache, sideKeyScroll: s.sideKeyScroll });
   }
 
   /**
@@ -139,7 +139,17 @@ export class MuteStore {
   setAutoClearCache(enabled: boolean): boolean {
     const s: MuteSettings = this.settings;
     return this.saveSettings({ filterEnabled: s.filterEnabled, colorMode: s.colorMode,
-      forceWebDark: s.forceWebDark, autoClearCache: enabled });
+      forceWebDark: s.forceWebDark, autoClearCache: enabled, sideKeyScroll: s.sideKeyScroll });
+  }
+
+  /**
+   * 侧键滑动开关（设计 §2.7.8，需求 F13）：落 `mute.settings` 的 `sideKeyScroll`，默认开。
+   * 与自动清理同形：写失败按盘重读，界面上的 Toggle 跟着退回原值。
+   */
+  setSideKeyScroll(enabled: boolean): boolean {
+    const s: MuteSettings = this.settings;
+    return this.saveSettings({ filterEnabled: s.filterEnabled, colorMode: s.colorMode,
+      forceWebDark: s.forceWebDark, autoClearCache: s.autoClearCache, sideKeyScroll: enabled });
   }
 
   // ---- 关键词（需求 F2 / F6）----
@@ -429,7 +439,8 @@ export class MuteStore {
   }
 
   /**
-   * 导出的设置：**显式剔除** `autoClearCache`（设计 §2.4）。它是本机的缓存策略，换设备导入不该带走。
+   * 导出的设置：**显式剔除** `autoClearCache` 与 `sideKeyScroll`（设计 §2.4）。
+   * 前者是本机的缓存策略，后者是本机侧键能力偏好，换设备导入不该带走。
    * 导出处不走 `this.settings` 直接交出去，就是为了让这项剔除只有一处，不靠每个调用方记得剥一层。
    */
   exportSettings(): ExportSettings {

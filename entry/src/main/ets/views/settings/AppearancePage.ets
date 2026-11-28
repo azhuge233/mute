@@ -34,11 +34,22 @@ const COLOR_MODES: string[] = [COLOR_MODE_AUTO, COLOR_MODE_LIGHT, COLOR_MODE_DAR
 @ComponentV2
 export struct AppearancePage {
   @Require @Param store: MuteStore;
+  /** 设备是否上报侧键滑动（设计 §2.7.8 / A50）：假时开关置灰并写「设备不支持」。 */
+  @Param sideKeySupported: boolean = false;
   @Event onChanged: () => void = () => {
   };
 
   private setForceWebDark(enabled: boolean): void {
     if (!this.store.setForceWebDark(enabled)) {
+      showToast(this.getUIContext(), $r('app.string.toast_save_failed'));
+      return;
+    }
+    this.onChanged();
+  }
+
+  /** 侧键滑动开关（设计 §2.7.8 / F13）：写失败提示并退回原值，与上一行同一口径。 */
+  private setSideKeyScroll(enabled: boolean): void {
+    if (!this.store.setSideKeyScroll(enabled)) {
       showToast(this.getUIContext(), $r('app.string.toast_save_failed'));
       return;
     }
@@ -120,6 +131,14 @@ export struct AppearancePage {
       : $r('app.string.settings_force_dark_hint_follow');
   }
 
+  /**
+   * 侧键滑动的置灰原因（设计 §2.7.8 / A50）：设备不上报智控键滑动时开关不可用。
+   * 可用时不挂这一行（`undefined` 不占位），与上一行同一套写法。
+   */
+  private sideKeyHint(): Resource | undefined {
+    return this.sideKeySupported ? undefined : $r('app.string.settings_side_key_unsupported');
+  }
+
   build() {
     Scroll() {
       Column({ space: GAP }) {
@@ -141,6 +160,17 @@ export struct AppearancePage {
           hint: this.forceDarkHint(),
           onChange: (value: boolean) => {
             this.setForceWebDark(value);
+          }
+        })
+        // 第三行：侧键滑动（F13）——设备不支持时置灰并写明原因，与上一行同一形状
+        SwitchRow({
+          label: $r('app.string.settings_side_key_scroll'),
+          desc: $r('app.string.settings_side_key_scroll_desc'),
+          isOn: this.store.settings.sideKeyScroll,
+          available: this.sideKeySupported,
+          hint: this.sideKeyHint(),
+          onChange: (value: boolean) => {
+            this.setSideKeyScroll(value);
           }
         })
       }

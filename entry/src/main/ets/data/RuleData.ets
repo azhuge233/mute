@@ -21,16 +21,20 @@ export const COLOR_MODE_LIGHT: string = 'light';
 export const COLOR_MODE_DARK: string = 'dark';
 
 /**
- * `mute.settings` 的形状（设计 §2.4）。默认值取需求 F6：过滤开、跟随系统、强制网页深色开、自动清理关。
+ * `mute.settings` 的形状（设计 §2.4）。默认值取需求 F6：过滤开、跟随系统、强制网页深色开、自动清理关、侧键滑动开。
  *
  * `autoClearCache` 是自动清理开关（设计 §2.7.7，需求 F12），默认关：清理是删数据的动作，
  * 开不开由用户点。它只在本机有意义——导出 JSON 时显式剔除（设计 §2.4），换设备导入不该带走本机的缓存策略。
+ *
+ * `sideKeyScroll` 是侧键滑动开关（设计 §2.7.8，需求 F13），默认开；它依赖具体设备是否上报侧键滑动事件，
+ * 同样是本机偏好，导出时一并剔除（同 `autoClearCache`）。
  */
 export interface MuteSettings {
   filterEnabled: boolean;
   colorMode: string;
   forceWebDark: boolean;
   autoClearCache: boolean;
+  sideKeyScroll: boolean;
 }
 
 /** `mute.keywords` 的一条（设计 §2.4）。`text` 是规范化之后的文本。 */
@@ -61,6 +65,7 @@ interface RawSettings {
   colorMode?: string;
   forceWebDark?: boolean;
   autoClearCache?: boolean;
+  sideKeyScroll?: boolean;
 }
 
 interface RawKeyword {
@@ -78,7 +83,9 @@ interface RawAuthor {
 }
 
 export function defaultSettings(): MuteSettings {
-  return { filterEnabled: true, colorMode: COLOR_MODE_AUTO, forceWebDark: true, autoClearCache: false };
+  return {
+    filterEnabled: true, colorMode: COLOR_MODE_AUTO, forceWebDark: true, autoClearCache: false, sideKeyScroll: true
+  };
 }
 
 /** 三模式里只认这三个值；盘上写了别的（旧版本、手改）按默认「跟随系统」处理。 */
@@ -220,6 +227,8 @@ function parseSettings(raw: string): MuteSettings {
   out.forceWebDark = typeof parsed.forceWebDark === 'boolean' ? parsed.forceWebDark : out.forceWebDark;
   // 盘上没有这个键（旧版本、或从别的设备导进来的设置）按默认「关」处理（设计 §2.4）
   out.autoClearCache = typeof parsed.autoClearCache === 'boolean' ? parsed.autoClearCache : out.autoClearCache;
+  // 盘上没有这个键（旧版本、或从别的设备导进来的设置）按默认「开」处理（设计 §2.7.8）
+  out.sideKeyScroll = typeof parsed.sideKeyScroll === 'boolean' ? parsed.sideKeyScroll : out.sideKeyScroll;
   const mode: string = typeof parsed.colorMode === 'string' ? parsed.colorMode : '';
   out.colorMode = isKnownColorMode(mode) ? mode : COLOR_MODE_AUTO;
   return out;

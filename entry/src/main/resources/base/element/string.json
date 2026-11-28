@@ -114,7 +114,23 @@
     },
     {
       "name": "settings_appearance",
-      "value": "外观"
+      "value": "外观与行为"
+    },
+    {
+      "name": "settings_rules",
+      "value": "屏蔽规则"
+    },
+    {
+      "name": "settings_side_key_scroll",
+      "value": "侧键滑动"
+    },
+    {
+      "name": "settings_side_key_scroll_desc",
+      "value": "上下滑动电源键，滚动时间线"
+    },
+    {
+      "name": "settings_side_key_unsupported",
+      "value": "设备不支持"
     },
     {
       "name": "settings_account_manage",

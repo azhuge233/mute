@@ -7,14 +7,16 @@ import { AccountPage } from './AccountPage';
 import { AppearancePage } from './AppearancePage';
 import { AuthorsPage } from './AuthorsPage';
 import { KeywordsPage } from './KeywordsPage';
+import { RulesPage } from './RulesPage';
 import { SettingsHome, SettingsTarget } from './SettingsHome';
 import { SettingsUnavailable } from './SettingsRow';
 import { StoragePage } from './StoragePage';
 import { TransferPage } from './TransferPage';
 
-/** 八个页面（主页 + 七个子页）的路由名（设计 §2.7.1）：`pushPathByName` 与 `navDestination` 的 builder 共用这几处。 */
+/** 九个页面（主页 + 八个）的路由名（设计 §2.7.1）：`pushPathByName` 与 `navDestination` 的 builder 共用这几处。 */
 export const ROUTE_SETTINGS: string = 'settings';
 export const ROUTE_APPEARANCE: string = 'settings/appearance';
+export const ROUTE_RULES: string = 'settings/rules';
 export const ROUTE_KEYWORDS: string = 'settings/keywords';
 export const ROUTE_AUTHORS: string = 'settings/authors';
 export const ROUTE_ACCOUNT: string = 'settings/account';
@@ -23,7 +25,7 @@ export const ROUTE_TRANSFER: string = 'settings/transfer';
 export const ROUTE_ABOUT: string = 'settings/about';
 
 /**
- * 宿主递给八个 `HdsNavDestination` 的状态与回调。
+ * 宿主递给八个子页 `HdsNavDestination` 的状态与回调（主设置页也是 `HdsNavDestination`，但它的参数是 `onOpen` 与 `accountView`，不走这个包）。
  *
  * 为什么打包成一个参数：`navDestination` 的 builder 是全局 `@Builder`，拿不到宿主的状态
  * （没有 `this`），只能由宿主把这一层的输入与动作显式送进来。页面各自只取自己那几个字段，
@@ -47,12 +49,17 @@ export interface SettingsEnv {
   onReLogin: () => void;
   /** 账号行首头像（设计 §2.7.4 / A29）：读盘与裁圆只在宿主一处，页面只把它递给列表。 */
   avatarOf: (id: string) => PixelMap | undefined;
+  /** 设备是否上报侧键滑动（设计 §2.7.8）：外观与行为页据此决定开关还是「设备不支持」。 */
+  sideKeySupported: boolean;
 }
 
 /** 路由名 → 页面标题。标题栏归 HDS（设计 §2.7.3），所以标题按路由给，不在每个页面里各写一份。 */
 function titleOf(name: string): Resource {
   if (name === ROUTE_APPEARANCE) {
     return $r('app.string.settings_appearance');
+  }
+  if (name === ROUTE_RULES) {
+    return $r('app.string.settings_rules');
   }
   if (name === ROUTE_KEYWORDS) {
     return $r('app.string.settings_group_keywords');
@@ -75,25 +82,19 @@ function titleOf(name: string): Resource {
   return $r('app.string.settings_title');
 }
 
-/** 主设置页的七个入口 → 路由名：入口只说「要开哪一件事」（`SettingsTarget`），映射收在这里。 */
+/** 主设置页的五个入口 → 路由名：入口只说「要开哪一件事」（`SettingsTarget`），映射收在这里。 */
 function routeOf(target: SettingsTarget): string {
   if (target === SettingsTarget.APPEARANCE) {
     return ROUTE_APPEARANCE;
   }
-  if (target === SettingsTarget.KEYWORDS) {
-    return ROUTE_KEYWORDS;
-  }
-  if (target === SettingsTarget.AUTHORS) {
-    return ROUTE_AUTHORS;
+  if (target === SettingsTarget.RULES) {
+    return ROUTE_RULES;
   }
   if (target === SettingsTarget.ACCOUNT) {
     return ROUTE_ACCOUNT;
   }
   if (target === SettingsTarget.STORAGE) {
     return ROUTE_STORAGE;
-  }
-  if (target === SettingsTarget.TRANSFER) {
-    return ROUTE_TRANSFER;
   }
   if (target === SettingsTarget.ABOUT) {
     return ROUTE_ABOUT;
@@ -126,11 +127,11 @@ function titleBarOf(name: string): HdsNavigationTitleBarOptions {
 }
 
 /**
- * 设置页八个 `HdsNavDestination` 的 builder（设计 §2.7.1 / §2.7.3）：宿主只挂这一处，
+ * 设置页九个 `HdsNavDestination` 的 builder（设计 §2.7.1 / §2.7.3）：宿主只挂这一处，
  * 逐页的 builder 不占宿主的行数（宿主在单文件 500 行判据上没有余量）。
  *
  * 每页的路由名与标题都来自这一个入口：返回值只有一个 `HdsNavDestination`，页面按 `name` 分支长在它里面——
- * 外层容器与标题栏只有一份，八个分支只换内容。规则副本没建起来时不装出空表，八个路由都只显示
+ * 外层容器与标题栏只有一份，九个分支只换内容。规则副本没建起来时不装出空表，九个路由都只显示
  * 一句「规则还没加载完」。
  */
 @Builder
@@ -154,8 +155,22 @@ export function settingsDestination(name: string, env: SettingsEnv) {
       } else if (name === ROUTE_APPEARANCE) {
         AppearancePage({
           store: env.store,
+          sideKeySupported: env.sideKeySupported,
           onChanged: () => {
             env.onChanged();
+          }
+        })
+      } else if (name === ROUTE_RULES) {
+        RulesPage({
+          store: env.store,
+          onOpenKeywords: () => {
+            env.stack.pushPathByName(ROUTE_KEYWORDS, null);
+          },
+          onOpenAuthors: () => {
+            env.stack.pushPathByName(ROUTE_AUTHORS, null);
+          },
+          onOpenTransfer: () => {
+            env.stack.pushPathByName(ROUTE_TRANSFER, null);
           }
         })
       } else if (name === ROUTE_KEYWORDS) {

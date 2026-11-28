@@ -1,6 +1,6 @@
 import { FONT_BODY, FONT_HINT } from '../../theme/TypeScale';
 
-/** 行高与左右内边距：主设置页与五个子页共用同一套（设计 §2.7.1）。 */
+/** 行高与左右内边距：主设置页与八个子页共用同一套（设计 §2.7.1）。 */
 export const ROW_HEIGHT: number = 48;
 export const PADDING_H: number = 16;
 const GAP: number = 8;
@@ -8,7 +8,7 @@ const GAP: number = 8;
  * 右向指示符（设计 §2.7.1 / D27）：系统符号 `chevron_right`，20fp、取辅助文字色。
  *
  * 原来是文本字 `›`——一个字符的字形偏小、基线偏高，与鸿蒙的列表观感不同。换符号之后全应用只有
- * 这一处指示符来源（六页的入口行都调 `EntryRow`），原来那个字面量已删除，不留着等下一次分叉。
+ * 这一处指示符来源（各个入口行都调 `EntryRow`），原来那个字面量已删除，不留着等下一次分叉。
  */
 const CHEVRON_SIZE: number = 20;
 /** 置灰时文字的不透明度：同账号页「登录流程进行中」那一档，全应用一个数。 */
@@ -107,6 +107,9 @@ export struct SwitchRow {
         })
     }
     .width('100%')
+    // 最小行高与入口行 / 下拉行 / 读数行对齐（设计 §2.7.2）：两行文字落在 48vp 里垂直居中，
+    // 带 `hint` 的三行文字按内容增高；只给最小高而不固定高，否则那句置灰原因会被截掉。
+    .constraintSize({ minHeight: ROW_HEIGHT })
   }
 }
 
@@ -183,7 +186,7 @@ export struct ReadoutRow {
 
 /**
  * 规则副本没建起来时的占位（取不到宿主上下文，几乎不会发生，但不能装出空表）。
- * 六个路由共用这一句，不各写一遍文案——判断在 `SettingsRoutes.ets` 一处。
+ * 八个路由共用这一句，不各写一遍文案——判断在 `SettingsRoutes.ets` 一处。
  */
 @ComponentV2
 export struct SettingsUnavailable {

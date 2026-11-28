@@ -19,10 +19,11 @@ export enum TransferOutcome {
 }
 
 /**
- * 导出文件里的 `settings`（设计 §2.4）：`mute.settings` 去掉 `autoClearCache`。
- *
- * 它是本机的缓存策略，不是用户的显示设置——换设备导入不该带走，所以导出侧单独一个形状，
- * 而不是把整个 `MuteSettings` 交出去再把那一项删一层。导入侧不读这个块（覆盖只换两张规则表）。
+  * 导出文件里的 `settings`（设计 §2.4）：`mute.settings` 去掉 `autoClearCache` 与 `sideKeyScroll`。
+  *
+  * 前者是本机的缓存策略，后者取决于目标设备的硬件能力，都不是用户的显示设置——换设备导入不该带走，
+  * 所以导出侧单独一个形状，而不是把整个 `MuteSettings` 交出去再把那两项删一层。导入侧不读这个块
+  * （覆盖只换两张规则表）。
  */
 export interface ExportSettings {
   filterEnabled: boolean;

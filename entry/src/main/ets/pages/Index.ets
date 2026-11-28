@@ -16,6 +16,7 @@ import { MuteStore } from '../store/MuteStore';
 import { RuleData } from '../data/RuleData';
 import { SystemTheme, ThemeService } from '../theme/ThemeService';
 import { HOME_URL, loadWhenAttached } from '../views/MuteWeb';
+import { SideKeyScroll } from '../views/SideKeyScroll';
 import { AccountMeta, AccountService, LOGIN_URL, LoginMode } from '../account/AccountService';
 import { AccountAvatar } from '../account/AccountAvatar';
 import { AccountViewState } from '../account/AccountViewState';
@@ -29,7 +30,7 @@ const SHEET_HEIGHT: SheetSize = SheetSize.MEDIUM;
 /**
  * MUTE 的 HDS 导航宿主（需求 F1、设计 §2.7.3 / §2.9）：`HdsNavigation` 承载全部页面，标题栏与返回按钮都归 HDS
  * （`titleBar(...)` + `titleMode(MINI)` 紧凑态，两个图标按钮走标题栏菜单）；内容层 `views/MuteContent.ets` 延伸到
- * 标题栏下方，设置六个子页是同一个 `NavPathStack` 上的 `HdsNavDestination`（D6：不加页面路由）。
+ * 标题栏下方，设置八个子页是同一个 `NavPathStack` 上的 `HdsNavDestination`（D6：不加页面路由）。
  *
  * 本文件只做接线：账号动作与登录流程在 `account/AccountActions.ets`，启动看门狗在 `views/WebLoadGuard.ts`，
  * 标题栏配置在 `views/NavTitleBar.ets`，`Web` 装配与长按在 `views/MuteContent.ets`，主题映射在 `theme/ThemeService.ets`。
@@ -65,6 +66,10 @@ struct MuteNavigation {
    * 经 `SettingsEnv` 递进去——存储页清完缓存后主设置页那个值要跟着变，而设置页从子页返回时不重建。
    */
   private cacheView: CacheView = new CacheView();
+  /** 侧键滑动的订阅器（设计 §2.7.8）：控制器取提供者（重建后会换），高度由 `MuteWeb` 报进来。 */
+  private sideKey: SideKeyScroll = new SideKeyScroll(() => this.controller, () => this.viewportHeight);
+  /** `Web` 可视高度（vp）：侧键步长 = 它 × 60%；0 表示还没量到（首次滑动丢弃，不猜默认值）。 */
+  private viewportHeight: number = 0;
   /** 本人主页被动捕获与头像解码（设计 §2.5）：宿主上下文不可用时为 undefined，标题栏退回系统符号。 */
   private avatarStore: AccountAvatar | undefined = undefined;
   /** 当前账号头像：传给标题栏账号按钮的图标位（A18）；无文件或解码失败时为 undefined。 */
@@ -110,11 +115,41 @@ struct MuteNavigation {
       this.accountActions().handlePageEnd(url);
     };
     this.startWatchdog();
+    // 侧键滑动（设计 §2.7.8）：先探一次能力（开关关着也要知道设备支不支持，否则界面上的开关没有依据）
+    this.sideKey.probe(this.sideKeyOn());
   }
 
   aboutToDisappear(): void {
     // 页面走了还挂着计时器，回调会打在一次不该发生的重建上
     this.loadGuard.clear();
+    // 侧键订阅必须退掉：不退订就是替下一个前台应用吃掉一次滑动（设计 §2.7.8 的生命周期约束）
+    this.sideKey.unsubscribe();
+  }
+
+  // ---- 侧键滑动（设计 §2.7.8 / 需求 F13）----
+
+  /** 侧键开关：只有设置里开着才订阅。设备支不支持由订阅结果决定，不由开关决定。 */
+  private sideKeyOn(): boolean {
+    return this.store !== undefined && this.store.settings.sideKeyScroll;
+  }
+
+  /** 让订阅状态跟上「前台 + 开关」：开着就订阅，否则退订（退订才恢复系统默认响应）。 */
+  private syncSideKey(): void {
+    if (this.sideKeyOn()) {
+      this.sideKey.subscribe();
+    } else {
+      this.sideKey.unsubscribe();
+    }
+  }
+
+  /** 进前台：恢复订阅（退后台时已经退订过）。 */
+  onPageShow(): void {
+    this.syncSideKey();
+  }
+
+  /** 离开前台：立刻退订，别的应用与系统才有权收到这次滑动。 */
+  onPageHide(): void {
+    this.sideKey.unsubscribe();
   }
 
   // ---- 启动看门狗（设计 §2.9 ③④）----
@@ -312,7 +347,7 @@ struct MuteNavigation {
   }
 
   /**
-   * 设置页一组的状态与回调（设计 §2.7.1）：八个 `HdsNavDestination` 的 builder 在
+   * 设置页一组的状态与回调（设计 §2.7.1）：九个 `HdsNavDestination` 的 builder 在
    * `views/settings/SettingsRoutes.ets`，全局 builder 拿不到宿主状态，只能由这一处送进去。
    */
   private settingsEnv(): SettingsEnv {
@@ -324,6 +359,8 @@ struct MuteNavigation {
       onChanged: () => {
         this.applyTheme();
         this.publish();
+        // 侧键开关可能刚变：让订阅状态跟上来（关掉时立刻退订，不等下一次切页）
+        this.syncSideKey();
       },
       onSwitchAccount: (id: string) => {
         this.accountActions().switchAccount(id);
@@ -340,7 +377,8 @@ struct MuteNavigation {
       onReLogin: () => {
         this.accountActions().startLoginFlow(LoginMode.RELOGIN);
       },
-      avatarOf: (id: string) => this.avatarOf(id)
+      avatarOf: (id: string) => this.avatarOf(id),
+      sideKeySupported: this.sideKey.capability() === 'supported'
     };
   }
 
@@ -456,6 +494,9 @@ struct MuteNavigation {
             },
             onRulesChanged: () => {
               this.publish();
+            },
+            onViewportHeight: (height: number) => {
+              this.viewportHeight = height;
             }
           })
             .width('100%')

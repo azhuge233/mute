@@ -63,6 +63,9 @@ export struct MuteContent {
   };
   @Event onRulesChanged: () => void = () => {
   };
+  /** `Web` 可视高度（vp）：透传给宿主，侧键滑动的步长用它折算（设计 §2.7.8）。 */
+  @Event onViewportHeight: (height: number) => void = (height: number) => {
+  };
   /** 探针读完（或超时）：三样都为空 = 什么都没读到（设计 §2.5.1）。 */
   @Event onProbeDone: (uid: string, nickname: string, avatarUrl: string) => void =
     (uid: string, nickname: string, avatarUrl: string) => {
@@ -169,6 +172,9 @@ export struct MuteContent {
             onTouchPoint: (x: number, y: number) => {
               // 触点在本层收下就存进长按状态（设计 §2.8：锚点与本层同一个 `Stack`、同一套坐标）
               this.longPress.setTouchPoint(x, y);
+            },
+            onViewportHeight: (height: number) => {
+              this.onViewportHeight(height);
             }
           })
         }, (epoch: number) => String(epoch))
